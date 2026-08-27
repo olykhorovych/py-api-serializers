@@ -30,7 +30,7 @@ class ActorSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name", "full_name")
 
     def get_full_name(self, obj: Actor) -> str:
-        return "{} {}".format(obj.first_name, obj.last_name)
+        return str(obj)
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -41,12 +41,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class MovieListSerializer(MovieSerializer):
-    genres = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field="name"
-    )
-    actors = serializers.StringRelatedField(many=True, read_only=True)
+    genres = serializers.StringRelatedField(many=True)
+    actors = serializers.StringRelatedField(many=True)
 
 
 class MovieRetrieveSerializer(MovieSerializer):
@@ -61,16 +57,8 @@ class MovieSessionSerializer(serializers.ModelSerializer):
 
 
 class MovieSessionListSerializer(serializers.ModelSerializer):
-    movie_title = serializers.SlugRelatedField(
-        slug_field="title",
-        read_only=True,
-        source="movie"
-    )
-    cinema_hall_name = serializers.SlugRelatedField(
-        slug_field="name",
-        read_only=True,
-        source="cinema_hall"
-    )
+    movie_title = serializers.StringRelatedField(source="movie")
+    cinema_hall_name = serializers.StringRelatedField(source="cinema_hall")
     cinema_hall_capacity = serializers.IntegerField(
         read_only=True,
         source="cinema_hall.capacity"
